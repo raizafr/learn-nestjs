@@ -14,6 +14,8 @@ import { LoginUserDto } from './users/dto/login-user.dto';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { ResendEmailAuthDto } from './dto/resendemail-auth.dto';
+import { VerificationOtpAuthDto } from './dto/verification-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -37,13 +39,29 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async me(@Req() req: Request) {
+  async me(@Req() req: Request, @Res() res: Response) {
     const token = req.headers.authorization.split(' ')[1];
-    return this.authService.getUserFromToken(token);
+    return this.authService.getUserFromToken(token, res);
   }
 
   @Delete('logout')
   logout(@Req() req: Request, @Res() res: Response) {
     return this.authService.logout(req, res);
+  }
+
+  @Post('resend-email')
+  async resendOtp(
+    @Body() resendEmailAuthDto: ResendEmailAuthDto,
+    @Res() res: Response,
+  ) {
+    return this.authService.resendOtpCode(resendEmailAuthDto, res);
+  }
+
+  @Post('verification-otp')
+  async verifyOtp(
+    @Body() verificationAuthDto: VerificationOtpAuthDto,
+    @Res() res: Response,
+  ) {
+    return this.authService.verifyOtp(verificationAuthDto, res);
   }
 }

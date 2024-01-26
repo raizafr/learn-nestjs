@@ -12,8 +12,6 @@ export class RegisterUserDto {
   @IsNotEmpty()
   userName: string;
 
-  profilePicture: string;
-
   @IsNotEmpty()
   password: string;
 }

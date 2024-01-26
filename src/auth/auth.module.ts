@@ -8,6 +8,8 @@ import { jwtConstants } from './constants';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 import { JwtStrategy } from './jwt.strategy';
+import { NodemailerService } from 'src/nodemailer/nodemailer.service';
+import { MailTemplate } from 'src/utils/MailTemplate';
 
 @Module({
   imports: [
@@ -19,6 +21,13 @@ import { JwtStrategy } from './jwt.strategy';
     UsersModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService, UsersService, JwtStrategy],
+  providers: [
+    AuthService,
+    PrismaService,
+    UsersService,
+    JwtStrategy,
+    NodemailerService,
+    MailTemplate,
+  ],
 })
 export class AuthModule {}

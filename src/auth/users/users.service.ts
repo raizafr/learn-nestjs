@@ -3,10 +3,16 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import * as speakeasy from 'speakeasy';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma.service';
-
+import { NodemailerService } from 'src/nodemailer/nodemailer.service';
+import { MailTemplate } from 'src/utils/MailTemplate';
+import { UpdateProfilDto } from './dto/updateProfil-user.dto';
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly nodemailerService: NodemailerService,
+    private readonly mailTemplate: MailTemplate,
+  ) {}
 
   async create(registerUserDto: RegisterUserDto) {
     try {
@@ -28,8 +34,16 @@ export class UsersService {
           password: hash,
         },
       });
+
+      await this.nodemailerService.sendMail({
+        from: process.env.MAIL_USER,
+        to: email,
+        subject: 'OTP CODE',
+        html: this.mailTemplate.verificationTemplate(userName, otp),
+      });
+
       delete createUser.password;
-      return createUser;
+      return { message: `OTP code has been sent to ${email}`, createUser };
     } catch (err) {
       return err;
     }
@@ -46,4 +60,10 @@ export class UsersService {
       return err;
     }
   }
+
+  async updateProfil(
+    userId: string,
+    updateProfilDto: UpdateProfilDto,
+    res: Response,
+  ) {}
 }

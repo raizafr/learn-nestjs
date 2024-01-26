@@ -1,12 +1,14 @@
 -- CreateTable
-CREATE TABLE `User` (
+CREATE TABLE `user` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(191) NOT NULL,
     `fullName` VARCHAR(191) NOT NULL,
     `userName` VARCHAR(191) NOT NULL,
     `otpCode` VARCHAR(191) NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT false,
-    `profilePicture` VARCHAR(191) NULL,
+    `profilePictureUrl` VARCHAR(191) NULL,
+    `bio` VARCHAR(191) NULL,
+    `gender` VARCHAR(191) NULL,
     `password` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,

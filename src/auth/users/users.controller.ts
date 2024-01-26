@@ -1,12 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Param, Put, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { UpdateProfilDto } from './dto/updateProfil-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  findAll() {
-    return 'jhagdjahg';
+  @Put(':id/update-profile')
+  updateProfil(
+    @Param('id') userId: string,
+    @Body() updateProfilDto: UpdateProfilDto,
+    @Res() res: Response,
+  ) {
+    return this.usersService.updateProfil(userId, updateProfilDto, res);
   }
 }
