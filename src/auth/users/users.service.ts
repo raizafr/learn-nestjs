@@ -84,9 +84,44 @@ export class UsersService {
     }
   }
 
-  async updateProfil(
-    userId: string,
-    updateProfilDto: UpdateProfilDto,
-    res: Response,
-  ) {}
+  async findById(userId: number) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+      });
+      if (!user) return null;
+      return user;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async updateProfil(updateProfilDto: UpdateProfilDto, res: Response) {
+    try {
+      const { userId, fullName, userName, profilePictureUrl, bio, gender } =
+        updateProfilDto;
+      const findUserById = await this.findById(userId);
+      if (!findUserById) {
+        return res.status(404).json({ message: `user id ${userId} not found` });
+      }
+      const updateUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          fullName: fullName,
+          userName: userName,
+          profilePictureUrl: profilePictureUrl,
+          bio: bio,
+          gender: gender,
+          updatedAt: new Date(),
+        },
+      });
+      delete updateUser.otpCode;
+      delete updateUser.isActive;
+      delete updateUser.password;
+      return res.status(201).json({ message: 'update success', updateUser });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: 'internal server error' });
+    }
+  }
 }
