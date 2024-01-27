@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users/users.service';
 import { LoginUserDto } from './users/dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -26,25 +22,28 @@ export class AuthService {
   ) {}
 
   async validateUser(loginUserDto: LoginUserDto, res: Response) {
-    const user = await this.usersService.findOne(loginUserDto.email);
-    if (!user) {
-      res.status(404);
-      throw new NotFoundException(`${loginUserDto.email} not found`);
+    try {
+      const user = await this.usersService.findOne(loginUserDto.email);
+      if (!user) {
+        res.status(404).json({ message: `${loginUserDto.email} not found` });
+      }
+      if (!user.isActive) {
+        res.status(401).json({ message: `${user.email} not yet verified` });
+      }
+      const isMatch = await bcrypt.compare(
+        loginUserDto.password,
+        user.password,
+      );
+      if (!isMatch) {
+        res.status(401).json({ message: 'wrong password' });
+      }
+      return res.status(200).json({
+        message: 'login success',
+        access_token: this.jwtService.sign(loginUserDto),
+      });
+    } catch (err) {
+      throw err;
     }
-    if (!user.isActive) {
-      res.status(401);
-      throw new UnauthorizedException(`${user.email} not yet verified`);
-    }
-    const isMatch = await bcrypt.compare(loginUserDto.password, user.password);
-    if (!isMatch) {
-      res.status(401);
-      throw new UnauthorizedException('wrong password');
-    }
-    res.status(200);
-    res.cookie('access_token', this.jwtService.sign(loginUserDto), {
-      httpOnly: true,
-    });
-    return { access_token: this.jwtService.sign(loginUserDto) };
   }
 
   async login(loginUserDto: LoginUserDto, res: Response) {
@@ -61,8 +60,7 @@ export class AuthService {
       const { email } = this.jwtService.verify(token);
       const dataUser = await this.usersService.findOne(email);
       if (!dataUser.isActive) {
-        res.status(401);
-        throw new UnauthorizedException(`${email} not yet verified`);
+        return res.status(401).json({ message: `${email} not yet verified` });
       }
       delete dataUser.password;
       delete dataUser.otpCode;

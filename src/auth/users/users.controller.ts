@@ -1,6 +1,7 @@
 import { Body, Controller, Param, Put, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateProfilDto } from './dto/updateProfil-user.dto';
+import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {

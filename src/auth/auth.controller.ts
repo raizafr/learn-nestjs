@@ -25,15 +25,12 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  register(@Body() registerUserdto: RegisterUserDto) {
-    return this.usersService.create(registerUserdto);
+  register(@Body() registerUserdto: RegisterUserDto, @Res() res: Response) {
+    return this.usersService.create(registerUserdto, res);
   }
 
   @Post('login')
-  login(
-    @Body() loginUserDto: LoginUserDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  login(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
     return this.authService.login(loginUserDto, res);
   }
 

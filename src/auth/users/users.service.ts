@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma.service';
 import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 import { MailTemplate } from 'src/utils/MailTemplate';
 import { UpdateProfilDto } from './dto/updateProfil-user.dto';
+import { Response } from 'express';
 @Injectable()
 export class UsersService {
   constructor(
@@ -14,9 +15,17 @@ export class UsersService {
     private readonly mailTemplate: MailTemplate,
   ) {}
 
-  async create(registerUserDto: RegisterUserDto) {
+  async create(registerUserDto: RegisterUserDto, res: Response) {
     try {
       const { email, password, userName, fullName } = registerUserDto;
+      const findUserByEmail = await this.findOne(email);
+      if (findUserByEmail) {
+        return res.status(409).json({ message: `${email} already exist` });
+      }
+      const findUserByUsername = await this.findByUsername(userName);
+      if (findUserByUsername) {
+        return res.status(409).json({ message: `${userName} already exist` });
+      }
       const saltOrRounds = 10;
       const hash = await bcrypt.hash(password, saltOrRounds);
       const secreat = speakeasy.generateSecret();
@@ -43,7 +52,9 @@ export class UsersService {
       });
 
       delete createUser.password;
-      return { message: `OTP code has been sent to ${email}`, createUser };
+      return res
+        .status(201)
+        .json({ message: `OTP code has been sent to ${email}`, createUser });
     } catch (err) {
       return err;
     }
@@ -53,6 +64,18 @@ export class UsersService {
     try {
       const user = await this.prisma.user.findUnique({
         where: { email: email },
+      });
+      if (!user) return null;
+      return user;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async findByUsername(userName: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { userName: userName },
       });
       if (!user) return null;
       return user;
