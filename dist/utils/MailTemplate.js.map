@@ -1,0 +1,1 @@
+{"version":3,"file":"MailTemplate.js","sourceRoot":"","sources":["../../src/utils/MailTemplate.ts"],"names":[],"mappings":";;;AAAA,MAAa,YAAY;IACvB,oBAAoB,CAAC,QAAQ,EAAE,GAAG;QAChC,MAAM,QAAQ,GAAG;;;;;;6CAMwB,QAAQ;;gIAE2E,GAAG;;;;;OAK5H,CAAC;QACJ,OAAO,QAAQ,CAAC;IAClB,CAAC;CACF;AAlBD,oCAkBC"}
