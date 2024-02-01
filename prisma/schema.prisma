@@ -22,6 +22,7 @@ model user {
   updatedAt         DateTime?
   followed          followed[]
   follower          follower[]
+  post              post[]
 }
 
 model followed {
@@ -40,4 +41,24 @@ model follower {
   user       user @relation(fields: [userId], references: [id], map: "Follower_userId_fkey")
 
   @@index([userId], map: "Follower_userId_fkey")
+}
+
+model post {
+  id      Int       @id @default(autoincrement())
+  userId  Int
+  caption String
+  content content[]
+  user    user      @relation(fields: [userId], references: [id], map: "Post_userId_fkey")
+
+  @@index([userId], map: "Post_userId_fkey")
+}
+
+model content {
+  id     Int    @id @default(autoincrement())
+  postId Int
+  name   String
+  path   String
+  post   post   @relation(fields: [postId], references: [id], map: "Content_postId_fkey")
+
+  @@index([postId], map: "Content_postId_fkey")
 }

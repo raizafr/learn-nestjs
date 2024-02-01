@@ -6,10 +6,11 @@ import { UploadModule } from './upload/upload.module';
 import { FollowerModule } from './follower/follower.module';
 import { FollowedModule } from './followed/followed.module';
 import { DummyModule } from './dummy/dummy.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   controllers: [AppController],
   providers: [AppService],
-  imports: [AuthModule, UploadModule, FollowerModule, FollowedModule, DummyModule],
+  imports: [AuthModule, UploadModule, FollowerModule, FollowedModule, DummyModule, PostModule],
 })
 export class AppModule {}
