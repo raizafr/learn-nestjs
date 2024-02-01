@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -29,7 +29,7 @@ model followed {
   id         Int  @id @default(autoincrement())
   userId     Int
   followedId Int
-  user       user @relation(fields: [userId], references: [id], map: "Followed_userId_fkey")
+  user       user @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Followed_userId_fkey")
 }
@@ -38,7 +38,7 @@ model follower {
   id         Int  @id @default(autoincrement())
   userId     Int
   followerId Int
-  user       user @relation(fields: [userId], references: [id], map: "Follower_userId_fkey")
+  user       user @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Follower_userId_fkey")
 }
@@ -48,7 +48,7 @@ model post {
   userId  Int
   caption String
   content content[]
-  user    user      @relation(fields: [userId], references: [id], map: "Post_userId_fkey")
+  user    user      @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Post_userId_fkey")
 }
@@ -58,7 +58,7 @@ model content {
   postId Int
   name   String
   path   String
-  post   post   @relation(fields: [postId], references: [id], map: "Content_postId_fkey")
+  post   post   @relation(fields: [postId], references: [id])
 
   @@index([postId], map: "Content_postId_fkey")
 }
