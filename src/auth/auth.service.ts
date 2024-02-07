@@ -39,7 +39,7 @@ export class AuthService {
       }
       return res.status(200).json({
         message: 'login success',
-        access_token: this.jwtService.sign(loginUserDto),
+        access_token: this.jwtService.sign({ email: loginUserDto.email }),
       });
     } catch (err) {
       throw err;
@@ -49,9 +49,10 @@ export class AuthService {
   async login(loginUserDto: LoginUserDto, res: Response) {
     try {
       const response = await this.validateUser(loginUserDto, res);
+      console.log(response);
       return response;
     } catch (err) {
-      return err;
+      return res.status(400).json({ message: 'server error' });
     }
   }
 

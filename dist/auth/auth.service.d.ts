@@ -15,7 +15,7 @@ export declare class AuthService {
     private readonly mailTemplate;
     constructor(usersService: UsersService, jwtService: JwtService, prisma: PrismaService, nodemailerService: NodemailerService, mailTemplate: MailTemplate);
     validateUser(loginUserDto: LoginUserDto, res: Response): Promise<Response<any, Record<string, any>>>;
-    login(loginUserDto: LoginUserDto, res: Response): Promise<any>;
+    login(loginUserDto: LoginUserDto, res: Response): Promise<Response<any, Record<string, any>>>;
     getUserFromToken(token: string, res: Response): Promise<any>;
     logout(req: Request, res: Response): Response<any, Record<string, any>>;
     resendOtpCode(resendEmailAuthDto: ResendEmailAuthDto, res: Response): Promise<Response<any, Record<string, any>>>;

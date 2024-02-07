@@ -34,13 +34,10 @@ let DummyService = class DummyService {
             users.push(user);
         }
         try {
-            const createUser = await this.prismaService.user.createMany({
-                data: users,
-            });
-            res.status(201).json(createUser);
+            const createdUsers = await Promise.all(users.map((user) => this.prismaService.user.create({ data: user })));
+            res.status(201).json(createdUsers);
         }
         catch (err) {
-            console.log(err);
             res.status(500).json({ message: 'internal server error' });
         }
     }

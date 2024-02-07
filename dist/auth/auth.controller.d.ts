@@ -10,7 +10,7 @@ export declare class AuthController {
     private authService;
     constructor(usersService: UsersService, authService: AuthService);
     register(registerUserdto: RegisterUserDto, res: Response): Promise<any>;
-    login(loginUserDto: LoginUserDto, res: Response): Promise<any>;
+    login(loginUserDto: LoginUserDto, res: Response): Promise<Response<any, Record<string, any>>>;
     me(req: Request, res: Response): Promise<any>;
     logout(req: Request, res: Response): Response<any, Record<string, any>>;
     resendOtp(resendEmailAuthDto: ResendEmailAuthDto, res: Response): Promise<Response<any, Record<string, any>>>;
