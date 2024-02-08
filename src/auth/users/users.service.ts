@@ -124,4 +124,23 @@ export class UsersService {
       return res.status(500).json({ message: 'internal server error' });
     }
   }
+
+  async findManyUserByUsername(userName: string, res: Response) {
+    try {
+      const finds = await this.prisma.user.findMany({
+        where: { userName: { contains: userName } },
+      });
+      if (finds.length < 1) {
+        return res.status(200).json({ message: 'user not found', data: null });
+      }
+      const filter = finds.map((user) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, otpCode, isActive, ...rest } = user;
+        return rest;
+      });
+      res.status(200).json({ message: 'get data successfully', data: filter });
+    } catch (err) {
+      res.status(500).json({ message: 'internal server error' });
+    }
+  }
 }
