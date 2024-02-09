@@ -54,6 +54,7 @@ export class FollowedService {
       });
       return res.status(201).json({ message: 'followed added', add });
     } catch (err) {
+      console.log(err);
       res.status(500).json({ message: 'internal server error' });
     }
   }
@@ -101,7 +102,8 @@ export class FollowedService {
       });
       return res.status(200).json({ message: 'delete success' });
     } catch (err) {
-      res.status(500).json({ message: 'internal server error' });
+      console.log(err);
+      return res.status(500).json({ message: 'internal server error' });
     }
   }
 }
