@@ -56,7 +56,7 @@ export class UsersService {
         .status(201)
         .json({ message: `OTP code has been sent to ${email}`, createUser });
     } catch (err) {
-      return err;
+      return res.status(500).json({ message: 'internal server error' });
     }
   }
 
