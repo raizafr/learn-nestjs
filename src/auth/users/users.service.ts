@@ -143,4 +143,19 @@ export class UsersService {
       res.status(500).json({ message: 'internal server error' });
     }
   }
+
+  async getUserByUserName(userName: string, res: Response) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { userName },
+        include: { follower: true, followed: true },
+      });
+      if (!user) {
+        return res.status(404).json({ message: 'user not found' });
+      }
+      return res.status(200).json({ message: 'get user', data: user });
+    } catch (err) {
+      return res.status(500).json({ message: 'internal server error' });
+    }
+  }
 }

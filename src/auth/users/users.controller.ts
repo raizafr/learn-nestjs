@@ -29,4 +29,9 @@ export class UsersController {
   ) {
     return this.usersService.findManyUserByUsername(userName, res);
   }
+
+  @Get(':userName')
+  getUserByUserName(@Param('userName') userName: string, @Res() res: Response) {
+    return this.usersService.getUserByUserName(userName, res);
+  }
 }
