@@ -1,13 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
-import { PrismaService } from 'src/prisma.service';
 import { Response } from 'express';
 import { User } from 'src/auth/users/entities/user.entity';
 @Injectable()
 export class DummyService {
   constructor(
     @Inject('USERS_REPOSITORY') private userRepository: typeof User,
-    private prismaService: PrismaService,
   ) {}
 
   async addDummyUser(res: Response) {

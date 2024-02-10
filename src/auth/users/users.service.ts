@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { RegisterUserDto } from './dto/register-user.dto';
 import * as speakeasy from 'speakeasy';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from 'src/prisma.service';
 import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 import { MailTemplate } from 'src/utils/MailTemplate';
 import { UpdateProfilDto } from './dto/updateProfil-user.dto';
@@ -13,7 +12,6 @@ import { Op } from 'sequelize';
 export class UsersService {
   constructor(
     @Inject('USERS_REPOSITORY') private userRepository: typeof User,
-    private prisma: PrismaService,
     private readonly nodemailerService: NodemailerService,
     private readonly mailTemplate: MailTemplate,
   ) {}

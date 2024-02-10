@@ -2,15 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UsersService } from 'src/auth/users/users.service';
 import { Response } from 'express';
-import { PrismaService } from 'src/prisma.service';
 import { DeletePostDto } from './dto/delete-post.dto';
 
 @Injectable()
 export class PostService {
-  constructor(
-    private userService: UsersService,
-    private prismaService: PrismaService,
-  ) {}
+  constructor(private userService: UsersService) {}
   async createNewPost(createPostDto: CreatePostDto, res: Response) {
     const { userId, content, caption } = createPostDto;
     try {
@@ -30,19 +26,19 @@ export class PostService {
           });
         }
       }
-      const newPost = await this.prismaService.post.create({
-        data: {
-          userId: userIdNumber,
-          caption,
-          content: {
-            create: content.map((item: { name: string; path: string }) => ({
-              name: item.name,
-              path: item.path,
-            })),
-          },
-        },
-      });
-      return res.status(201).json({ message: 'created post', newPost });
+      // const newPost = await this.prismaService.post.create({
+      //   data: {
+      //     userId: userIdNumber,
+      //     caption,
+      //     content: {
+      //       create: content.map((item: { name: string; path: string }) => ({
+      //         name: item.name,
+      //         path: item.path,
+      //       })),
+      //     },
+      //   },
+      // });
+      // return res.status(201).json({ message: 'created post', newPost });
     } catch (err) {
       return res.status(500).json({ message: 'internal server error' });
     }
@@ -51,25 +47,25 @@ export class PostService {
   async deletePost(deletePostDto: DeletePostDto, res: Response) {
     const { postId } = deletePostDto;
     try {
-      const findPost = await this.prismaService.post.findUnique({
-        where: { id: postId },
-      });
-      if (!findPost) {
-        return res.status(404).json({ message: `post id ${postId} not found` });
-      }
-      await this.prismaService.content.deleteMany({
-        where: {
-          postId,
-        },
-      });
-      await this.prismaService.post.delete({
-        where: {
-          id: postId,
-        },
-      });
-      return res
-        .status(200)
-        .json({ message: `post id ${postId} delete success` });
+      // const findPost = await this.prismaService.post.findUnique({
+      //   where: { id: postId },
+      // });
+      // if (!findPost) {
+      //   return res.status(404).json({ message: `post id ${postId} not found` });
+      // }
+      // await this.prismaService.content.deleteMany({
+      //   where: {
+      //     postId,
+      //   },
+      // });
+      // await this.prismaService.post.delete({
+      //   where: {
+      //     id: postId,
+      //   },
+      // });
+      // return res
+      //   .status(200)
+      //   .json({ message: `post id ${postId} delete success` });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: 'internal server error' });

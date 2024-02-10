@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Response } from 'express';
-import { PrismaService } from 'src/prisma.service';
 import { UsersService } from 'src/auth/users/users.service';
 import { CreateFollowedDto } from './dto/create-followed.dto';
 import { Followed } from './entities/followed.entity';
@@ -9,7 +8,6 @@ import { Followed } from './entities/followed.entity';
 export class FollowedService {
   constructor(
     @Inject('FOLLOWEDS_REPOSITORY') private followedRepository: typeof Followed,
-    public prismaService: PrismaService,
     public userService: UsersService,
   ) {}
   async addFollowed(createFollowedDto: CreateFollowedDto, res: Response) {

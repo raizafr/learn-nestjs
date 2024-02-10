@@ -5,7 +5,6 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { ResendEmailAuthDto } from './dto/resendemail-auth.dto';
-import { PrismaService } from 'src/prisma.service';
 import * as speakeasy from 'speakeasy';
 import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 import { MailTemplate } from 'src/utils/MailTemplate';
@@ -16,7 +15,6 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private prisma: PrismaService,
     private readonly nodemailerService: NodemailerService,
     private readonly mailTemplate: MailTemplate,
   ) {}
