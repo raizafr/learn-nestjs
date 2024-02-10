@@ -5,6 +5,7 @@ import { UsersService } from 'src/auth/users/users.service';
 import { PrismaService } from 'src/prisma.service';
 import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 import { MailTemplate } from 'src/utils/MailTemplate';
+import { usersProviders } from 'src/auth/users/users.provider';
 
 @Module({
   controllers: [PostController],
@@ -14,6 +15,7 @@ import { MailTemplate } from 'src/utils/MailTemplate';
     PrismaService,
     NodemailerService,
     MailTemplate,
+    ...usersProviders,
   ],
 })
 export class PostModule {}

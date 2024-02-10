@@ -9,7 +9,7 @@ import {
 import { User } from 'src/auth/users/entities/user.entity';
 
 @Table
-export class Follower extends Model<Follower> {
+export class Followed extends Model<Followed> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -23,7 +23,7 @@ export class Follower extends Model<Follower> {
 
   @ForeignKey(() => User)
   @Column
-  followerId: number;
+  followedId: number;
 
   @BelongsTo(() => User)
   user: User;

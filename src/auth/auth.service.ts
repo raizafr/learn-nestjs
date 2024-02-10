@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from './users/users.service';
 import { LoginUserDto } from './users/dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -49,7 +49,6 @@ export class AuthService {
   async login(loginUserDto: LoginUserDto, res: Response) {
     try {
       const response = await this.validateUser(loginUserDto, res);
-      console.log(response);
       return response;
     } catch (err) {
       return res.status(400).json({ message: 'server error' });
@@ -67,7 +66,7 @@ export class AuthService {
       delete dataUser.otpCode;
       return res.status(200).json({ dataUser });
     } catch (err) {
-      return err;
+      return res.status(500).json({ message: 'internal server error' });
     }
   }
 
@@ -90,10 +89,7 @@ export class AuthService {
         secret: secreat.base32,
       });
 
-      await this.prisma.user.update({
-        where: { email },
-        data: { otpCode: otp },
-      });
+      await user.update({ otpCode: otp });
 
       await this.nodemailerService.sendMail({
         from: process.env.MAIL_USER,
@@ -116,19 +112,15 @@ export class AuthService {
       const { email, otpCode } = verificationOtpAuthDto;
       const user = await this.usersService.findOne(email);
       if (!user) {
-        return res.status(404);
-        throw new NotFoundException(`${email} not found`);
+        return res.status(404).json(`${email} not found`);
       }
       if (otpCode === user.otpCode) {
-        await this.prisma.user.update({
-          where: { email },
-          data: { isActive: true },
-        });
+        await user.update({ isActive: true });
         return res.status(200).json({ message: 'verification success' });
       }
       return res.status(401).json({ message: 'verification failed' });
     } catch (err) {
-      throw err;
+      return res.status(500).json({ message: 'internal server error' });
     }
   }
 }

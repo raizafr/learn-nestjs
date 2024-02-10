@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
 import { PrismaService } from 'src/prisma.service';
 import { Response } from 'express';
+import { User } from 'src/auth/users/entities/user.entity';
 @Injectable()
 export class DummyService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    @Inject('USERS_REPOSITORY') private userRepository: typeof User,
+    private prismaService: PrismaService,
+  ) {}
 
   async addDummyUser(res: Response) {
     const users = [];
@@ -23,9 +27,7 @@ export class DummyService {
       users.push(user);
     }
     try {
-      const createdUsers = await Promise.all(
-        users.map((user) => this.prismaService.user.create({ data: user })),
-      );
+      const createdUsers = await this.userRepository.bulkCreate(users);
       res.status(201).json(createdUsers);
     } catch (err) {
       res.status(500).json({ message: 'internal server error' });

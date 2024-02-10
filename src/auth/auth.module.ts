@@ -10,6 +10,7 @@ import { UsersService } from './users/users.service';
 import { JwtStrategy } from './jwt.strategy';
 import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 import { MailTemplate } from 'src/utils/MailTemplate';
+import { usersProviders } from './users/users.provider';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { MailTemplate } from 'src/utils/MailTemplate';
     JwtStrategy,
     NodemailerService,
     MailTemplate,
+    ...usersProviders,
   ],
 })
 export class AuthModule {}

@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { PrismaService } from 'src/prisma.service';
 import { CreateFollowerDto } from './dto/create-follower.dto';
 import { UsersService } from 'src/auth/users/users.service';
+import { Follower } from './entities/follower.entity';
 
 @Injectable()
 export class FollowerService {
   constructor(
+    @Inject('FOLLOWERS_REPOSITORY') private followerRepository: typeof Follower,
     private prismaService: PrismaService,
     private userService: UsersService,
   ) {}
@@ -39,22 +41,19 @@ export class FollowerService {
           .json({ message: `user with id ${followerId} does not exist` });
       }
 
-      const existFollower = await this.prismaService.follower.findFirst({
+      const existFollower = await this.followerRepository.findOne({
         where: { userId: userIdNumber, followerId: followerIdNumber },
       });
       if (existFollower) {
         return res.status(409).json({ message: 'failed to add, data exists' });
       }
 
-      const add = await this.prismaService.follower.create({
-        data: {
-          userId,
-          followerId,
-        },
+      const add = await this.followerRepository.create({
+        userId,
+        followerId,
       });
       return res.status(201).json({ message: 'follower added', add });
     } catch (err) {
-      console.log(err);
       return res.status(500).json({ message: 'internal server error' });
     }
   }
@@ -88,7 +87,7 @@ export class FollowerService {
           .json({ message: `user with id ${followerId} does not exist` });
       }
 
-      const existFollower = await this.prismaService.follower.findFirst({
+      const existFollower = await this.followerRepository.findOne({
         where: { userId: userIdNumber, followerId: followerIdNumber },
       });
       if (!existFollower) {
@@ -96,12 +95,9 @@ export class FollowerService {
           .status(404)
           .json({ message: 'failed to delete, data is missing' });
       }
-      await this.prismaService.follower.delete({
-        where: existFollower,
-      });
+      await existFollower.destroy();
       return res.status(200).json({ message: 'delete success' });
     } catch (err) {
-      console.log(err);
       return res.status(500).json({ message: 'internal server error' });
     }
   }

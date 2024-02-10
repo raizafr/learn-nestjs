@@ -5,6 +5,8 @@ import { PrismaService } from 'src/prisma.service';
 import { UsersService } from 'src/auth/users/users.service';
 import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 import { MailTemplate } from 'src/utils/MailTemplate';
+import { usersProviders } from 'src/auth/users/users.provider';
+import { followedsProviders } from './followed.provider';
 
 @Module({
   controllers: [FollowedController],
@@ -14,6 +16,8 @@ import { MailTemplate } from 'src/utils/MailTemplate';
     UsersService,
     NodemailerService,
     MailTemplate,
+    ...usersProviders,
+    ...followedsProviders,
   ],
 })
 export class FollowedModule {}
