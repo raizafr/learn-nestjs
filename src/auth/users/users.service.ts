@@ -42,7 +42,6 @@ export class UsersService {
         isActive: false,
         password: hash,
       });
-
       await this.nodemailerService.sendMail({
         from: process.env.MAIL_USER,
         to: email,
@@ -55,6 +54,7 @@ export class UsersService {
         .status(201)
         .json({ message: `OTP code has been sent to ${email}`, createUser });
     } catch (err) {
+      console.log(err);
       return res.status(500).json({ message: 'internal server error' });
     }
   }

@@ -8,9 +8,11 @@ import { FollowedModule } from './followed/followed.module';
 import { DummyModule } from './dummy/dummy.module';
 import { PostModule } from './post/post.module';
 import { DatabaseModule } from './database/database.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     AuthModule,
     UploadModule,
     FollowerModule,

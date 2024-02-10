@@ -49,6 +49,7 @@ export class AuthService {
       const response = await this.validateUser(loginUserDto, res);
       return response;
     } catch (err) {
+      console.log(err);
       return res.status(400).json({ message: 'server error' });
     }
   }
@@ -88,7 +89,6 @@ export class AuthService {
       });
 
       await user.update({ otpCode: otp });
-
       await this.nodemailerService.sendMail({
         from: process.env.MAIL_USER,
         to: email,
