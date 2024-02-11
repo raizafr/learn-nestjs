@@ -25,6 +25,9 @@ export class Followed extends Model<Followed> {
   @Column
   followedId: number;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, { foreignKey: 'userId', as: 'user' })
   user: User;
+
+  @BelongsTo(() => User, { foreignKey: 'followedId', as: 'followedUser' })
+  followedUser: User;
 }

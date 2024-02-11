@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { UsersService } from 'src/auth/users/users.service';
 import { CreateFollowedDto } from './dto/create-followed.dto';
 import { Followed } from './entities/followed.entity';
+import { User } from 'src/auth/users/entities/user.entity';
 
 @Injectable()
 export class FollowedService {
@@ -97,6 +98,36 @@ export class FollowedService {
       await existFollowed.destroy();
       return res.status(200).json({ message: 'delete success' });
     } catch (err) {
+      return res.status(500).json({ message: 'internal server error' });
+    }
+  }
+
+  async getAllFollowedById(id: number, res: Response) {
+    try {
+      const findsFollowed = await this.followedRepository.findAll({
+        where: { userId: id },
+        include: [
+          {
+            model: User,
+            as: 'followedUser',
+            attributes: [
+              'id',
+              'email',
+              'fullName',
+              'userName',
+              'profilePictureUrl',
+              'createdAt',
+              'updatedAt',
+            ],
+          },
+        ],
+      });
+
+      return res
+        .status(200)
+        .json({ message: 'foollowed get', data: findsFollowed });
+    } catch (err) {
+      console.log(err);
       return res.status(500).json({ message: 'internal server error' });
     }
   }

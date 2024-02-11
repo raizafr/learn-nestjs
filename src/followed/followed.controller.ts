@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { FollowedService } from './followed.service';
 import { CreateFollowedDto } from './dto/create-followed.dto';
 import { Response } from 'express';
@@ -20,5 +20,10 @@ export class FollowedController {
     @Res() res: Response,
   ) {
     return this.followedService.removeFollowed(createFollowedDto, res);
+  }
+
+  @Get(':id/get-all')
+  getAllFollowedById(@Param('id') id: number, @Res() res: Response) {
+    return this.followedService.getAllFollowedById(id, res);
   }
 }
