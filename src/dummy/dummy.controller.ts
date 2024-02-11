@@ -9,4 +9,9 @@ export class DummyController {
   createManyUsers(@Res() res: Response) {
     return this.dummyService.addDummyUser(res);
   }
+
+  @Get('create-random-follower')
+  createRandFollower(@Res() res: Response) {
+    return this.dummyService.createRandFollower(res);
+  }
 }
