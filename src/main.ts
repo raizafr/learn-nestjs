@@ -13,7 +13,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.enableCors()
+  app.enableCors();
   app.use('/resource', express.static('resource'));
   app.use(cookieParser());
   await app.listen(5000);
