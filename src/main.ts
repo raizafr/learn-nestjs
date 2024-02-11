@@ -13,15 +13,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://clone-instagram-kappa.vercel.app',
-      'https://clone-instagram-git-dev-raizafr.vercel.app',
-    ],
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  });
+  app.enableCors()
   app.use('/resource', express.static('resource'));
   app.use(cookieParser());
   await app.listen(5000);
