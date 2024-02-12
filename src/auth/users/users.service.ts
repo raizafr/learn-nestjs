@@ -143,7 +143,18 @@ export class UsersService {
       const user = await this.userRepository.findOne({
         where: { userName },
         attributes: { exclude: ['password', 'isActive', 'otpCode'] },
-        include: { all: true },
+        include: {
+          all: true,
+          attributes: {
+            exclude: [
+              'otpCode',
+              'isActive',
+              'createdAt',
+              'updatedAt',
+              'password',
+            ],
+          },
+        },
       });
       if (!user) {
         return res.status(404).json({ message: 'user not found' });

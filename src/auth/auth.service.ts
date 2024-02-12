@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UsersService } from './users/users.service';
 import { LoginUserDto } from './users/dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -9,10 +9,12 @@ import * as speakeasy from 'speakeasy';
 import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 import { MailTemplate } from 'src/utils/MailTemplate';
 import { VerificationOtpAuthDto } from './dto/verification-auth.dto';
+import { User } from './users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject('USERS_REPOSITORY') private usersRepository: typeof User,
     private usersService: UsersService,
     private jwtService: JwtService,
     private readonly nodemailerService: NodemailerService,
@@ -57,12 +59,17 @@ export class AuthService {
   async getUserFromToken(token: string, res: Response) {
     try {
       const { email } = this.jwtService.verify(token);
-      const dataUser = await this.usersService.findOne(email);
+      const dataUser = await this.usersRepository.findOne({
+        where: { email },
+        include: {
+          all: true,
+          attributes: { exclude: ['password', 'otpCode', 'isActive'] },
+        },
+        attributes: { exclude: ['password'] },
+      });
       if (!dataUser.isActive) {
         return res.status(401).json({ message: `${email} not yet verified` });
       }
-      delete dataUser.password;
-      delete dataUser.otpCode;
       return res.status(200).json({ dataUser });
     } catch (err) {
       return res.status(500).json({ message: 'internal server error' });
