@@ -9,12 +9,14 @@ import { DummyModule } from './dummy/dummy.module';
 import { PostModule } from './post/post.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './auth/users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     AuthModule,
     UploadModule,
+    UsersModule,
     FollowerModule,
     FollowedModule,
     DummyModule,

@@ -7,7 +7,8 @@ import { MailTemplate } from 'src/utils/MailTemplate';
 import { UpdateProfilDto } from './dto/updateProfil-user.dto';
 import { Response } from 'express';
 import { User } from './entities/user.entity';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -162,6 +163,26 @@ export class UsersService {
       return res.status(200).json({ message: 'get user', data: user });
     } catch (err) {
       console.log(err);
+      return res.status(500).json({ message: 'internal server error' });
+    }
+  }
+
+  async getRandomUsers(
+    params: { userId: number; limit: number },
+    res: Response,
+  ) {
+    const { userId, limit } = params;
+    try {
+      const getRandUser = await this.userRepository.findAll({
+        where: { id: { [Op.not]: userId } },
+        order: Sequelize.literal('RANDOM()'),
+        attributes: { exclude: ['password', 'otpCode', 'isActive'] },
+        limit: limit || 5,
+      });
+      return res
+        .status(200)
+        .json({ message: 'get users success', data: getRandUser });
+    } catch (err) {
       return res.status(500).json({ message: 'internal server error' });
     }
   }

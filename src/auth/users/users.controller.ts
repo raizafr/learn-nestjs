@@ -34,4 +34,12 @@ export class UsersController {
   getUserByUserName(@Param('userName') userName: string, @Res() res: Response) {
     return this.usersService.getUserByUserName(userName, res);
   }
+
+  @Get(':userId/get-random/:limit')
+  getRandomUsers(
+    @Param() params: { userId: number; limit: number },
+    @Res() res: Response,
+  ) {
+    return this.usersService.getRandomUsers(params, res);
+  }
 }
