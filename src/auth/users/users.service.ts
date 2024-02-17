@@ -35,7 +35,7 @@ export class UsersService {
         encoding: 'base32',
         secret: secreat.base32,
       });
-      const createUser = await this.userRepository.create({
+      await this.userRepository.create({
         email,
         fullName,
         userName,
@@ -49,11 +49,9 @@ export class UsersService {
         subject: 'OTP CODE',
         html: this.mailTemplate.verificationTemplate(userName, otp),
       });
-
-      delete createUser.password;
       return res
         .status(201)
-        .json({ message: `OTP code has been sent to ${email}`, createUser });
+        .json({ message: `OTP code has been sent to ${email}` });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: 'internal server error' });

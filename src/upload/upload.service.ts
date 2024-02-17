@@ -2,29 +2,40 @@ import { Injectable } from '@nestjs/common';
 import { CreateUploadDto } from './dto/create-upload.dto';
 import * as fs from 'fs';
 import { Response } from 'express';
+import { createClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class UploadService {
-  uploadProfileImage(
+  async uploadProfileImage(
     createUploadDto: CreateUploadDto,
     file: Express.Multer.File,
     res: Response,
   ) {
     const { userId } = createUploadDto;
-    const uploadDir = 'resource/';
+    const uploadDir = 'profile-picture/';
     const filePath = `${uploadDir}${userId}-${file.originalname}`;
-
-    if (fs.existsSync(filePath)) {
-      return res
-        .status(409)
-        .json({ message: `${file.originalname} already exist` });
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_KEY;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    try {
+      const { error, data } = await supabase.storage
+        .from('storage')
+        .upload(filePath, file.buffer);
+      if (error) {
+        return res.status(409).json({ message: error.message });
+      }
+      if (data) {
+        const publicImageUrl = supabase.storage
+          .from('storage')
+          .getPublicUrl(filePath);
+        return res.status(201).json({
+          message: 'image uploaded',
+          path: publicImageUrl.data.publicUrl,
+        });
+      }
+    } catch (err) {
+      return res.status(500).json({ message: 'internal server error' });
     }
-
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    fs.writeFileSync(filePath, file.buffer);
-    return res.status(201).json({ message: 'image uploaded', path: filePath });
   }
 
   uploadPosts(
