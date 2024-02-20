@@ -65,7 +65,7 @@ export class AuthService {
           all: true,
           attributes: { exclude: ['password', 'otpCode', 'isActive'] },
         },
-        attributes: { exclude: ['password'] },
+        attributes: { exclude: ['password', 'otpCode'] },
       });
       if (!dataUser.isActive) {
         return res.status(401).json({ message: `${email} not yet verified` });

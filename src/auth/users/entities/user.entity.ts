@@ -65,6 +65,11 @@ export class User extends Model<User> {
   @Column({
     type: DataType.STRING,
   })
+  webUrl: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
   password: string;
 
   @Column({
